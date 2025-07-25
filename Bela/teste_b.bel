@@ -1,0 +1,43 @@
+main() {
+    var float a;
+    var float b;
+    var float c;
+    var float d;
+    var bool flag;
+
+    a = readInput();
+    c = readInput();
+
+    flag = false;
+    b = ((a + c) * (c / a));
+
+    if (b > 0) then {
+        flag = true;
+    };
+
+    if flag then {
+        printLn b;
+    };
+
+    printLn a;
+    printLn b;
+    printLn c;
+
+    d = pow((a * b), (c + (a * b)));
+    printLn d;
+}
+
+fun float pow(float x, float y) {
+    var float res;
+    var float i;
+
+    res = 1;
+
+    i = y;
+    while (i > 0) {
+        res = (res * x);
+        i = (i - 1);
+    };
+
+    return res;
+}

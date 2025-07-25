@@ -15,6 +15,7 @@ public class Bela implements BelaConstants {
 
     public static void geraCodigo(Prog prog, String arquivo) {
         System.out.println("Gera\u00e7\u00e3o de c\u00f3digo para o programa: " + arquivo);
+        System.out.println(prog.toString());
     }
 
   static final public Prog Bela() throws ParseException {Main m;
@@ -144,7 +145,7 @@ result = ComandoAux(id);
       bloco = SeqComandos();
       jj_consume_token(FCHAVES);
       jj_consume_token(PONTOVIRG);
-result = new CIf(exp, bloco);
+result = new CIf(0, exp, bloco);
       break;
       }
     case WHILE:{
@@ -154,21 +155,21 @@ result = new CIf(exp, bloco);
       bloco = SeqComandos();
       jj_consume_token(FCHAVES);
       jj_consume_token(PONTOVIRG);
-result = new CWhile(exp, bloco);
+result = new CWhile(0, exp, bloco);
       break;
       }
     case RETORNO:{
       jj_consume_token(RETORNO);
       exp = Exp();
       jj_consume_token(PONTOVIRG);
-result = new CReturn(exp);
+result = new CReturn(0, exp);
       break;
       }
     case IMPRESSAO:{
       jj_consume_token(IMPRESSAO);
       exp = Exp();
       jj_consume_token(PONTOVIRG);
-result = new CPrint(exp);
+result = new CPrint(0, exp);
       break;
       }
     default:
@@ -180,17 +181,17 @@ result = new CPrint(exp);
     throw new Error("Missing return statement in function");
 }
 
-  static final public Comando ComandoAux(Token id) throws ParseException {Exp exp = null;
+  static final public Comando ComandoAux(Token id) throws ParseException {Object exp = null;
     ArrayList<Exp> args = new ArrayList<>();
     Comando result = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IGUAL:{
       jj_consume_token(IGUAL);
-      exp = ComandoAuxIgual();
-if (exp instanceof EChamadaFun && ((EChamadaFun)exp).getFun().equals("readInput")) {
-                result = new CReadInput(new EVar(id.image));
+      exp = ComandoAuxIgual(id);
+if (exp instanceof CReadInput) {
+                result = (CReadInput) exp;
             } else {
-                result = new CAtribuicao(new EVar(id.image), exp);
+                result = new CAtribuicao(0, id.image, (Exp) exp);
             }
       break;
       }
@@ -211,7 +212,7 @@ if (exp instanceof EChamadaFun && ((EChamadaFun)exp).getFun().equals("readInput"
       }
       jj_consume_token(FPAR);
       jj_consume_token(PONTOVIRG);
-result = new CChamadaFun(new EVar(id.image), args);
+result = new CChamadaFun(0, id.image, args);
       break;
       }
     default:
@@ -223,14 +224,14 @@ result = new CChamadaFun(new EVar(id.image), args);
     throw new Error("Missing return statement in function");
 }
 
-  static final public Exp ComandoAuxIgual() throws ParseException {Exp exp = null;
+  static final public Object ComandoAuxIgual(Token id) throws ParseException {Exp exp = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LEITURA:{
       jj_consume_token(LEITURA);
       jj_consume_token(APAR);
       jj_consume_token(FPAR);
       jj_consume_token(PONTOVIRG);
-{if ("" != null) return new EChamadaFun("readInput", new ArrayList<Exp>());}
+{if ("" != null) return new CReadInput(0, id.image);}
       break;
       }
     case APAR:
@@ -413,12 +414,12 @@ exps.add(exp);
     }
 }
 
-  static final public Fun Func() throws ParseException {Token retType;
-    Token funcName;
-    ArrayList<ParamFormalFun> params;
-    ArrayList<VarDecl> vars;
-    ArrayList<Comando> body;
-    Fun f;
+  static final public Fun Func() throws ParseException {Token retType = null;
+    Token funcName = null;
+    ArrayList<ParamFormalFun> params = new ArrayList<>();
+    ArrayList<VarDecl> vars = new ArrayList<>();
+    ArrayList<Comando> body = new ArrayList<>();
+    Fun f = null;
     jj_consume_token(FUN);
     retType = Tipo();
     funcName = TokenId();

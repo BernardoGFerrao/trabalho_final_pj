@@ -14,6 +14,7 @@ public class Bela {
 
     public static void geraCodigo(Prog prog, String arquivo) {
         System.out.println("Geração de código para o programa: " + arquivo);
+        System.out.println(prog.toString());
     }
 }
 PARSER_END(Bela)
@@ -133,48 +134,54 @@ Comando Comando() :
         {
             result = ComandoAux(id);
         }
-    | <IF> exp = Exp() <THEN> <ACHAVES> bloco = SeqComandos() <FCHAVES> <PONTOVIRG>
-        { result = new CIf(exp, bloco); }
-    | <WHILE> exp = Exp() <ACHAVES> bloco = SeqComandos() <FCHAVES> <PONTOVIRG>
-        { result = new CWhile(exp, bloco); }
-    | <RETORNO> exp = Exp() <PONTOVIRG>
-        { result = new CReturn(exp); }
-    | <IMPRESSAO> exp = Exp() <PONTOVIRG>
-        { result = new CPrint(exp); }
+        
+        | <IF> exp = Exp() <THEN> <ACHAVES> bloco = SeqComandos() <FCHAVES> <PONTOVIRG>
+            { result = new CIf(0, exp, bloco); }
+        
+        | <WHILE> exp = Exp() <ACHAVES> bloco = SeqComandos() <FCHAVES> <PONTOVIRG>
+            { result = new CWhile(0, exp, bloco); }
+        
+        | <RETORNO> exp = Exp() <PONTOVIRG>
+            { result = new CReturn(0, exp); }
+        
+        | <IMPRESSAO> exp = Exp() <PONTOVIRG>
+            { result = new CPrint(0, exp); }
     )
     { return result; }
 }
 
 Comando ComandoAux(Token id) :
 {
-    Exp exp = null;
+    Object exp = null;
     ArrayList<Exp> args = new ArrayList<>();
     Comando result = null;
 }
 {
     (
-        <IGUAL> exp = ComandoAuxIgual()
+        <IGUAL> exp = ComandoAuxIgual(id)
         {
-            if (exp instanceof EChamadaFun && ((EChamadaFun)exp).getFun().equals("readInput")) {
-                result = new CReadInput(new EVar(id.image));
+            if (exp instanceof CReadInput) {
+                result = (CReadInput) exp;
             } else {
-                result = new CAtribuicao(new EVar(id.image), exp);
+                result = new CAtribuicao(0, id.image, (Exp) exp);
             }
         }
-    | <APAR> (args = ListaExp())? <FPAR> <PONTOVIRG>
-        { result = new CChamadaFun(new EVar(id.image), args); }
+
+        | <APAR> (args = ListaExp())? <FPAR> <PONTOVIRG>
+            { result = new CChamadaFun(0, id.image, args); }
     )
     { return result; }
 }
 
-Exp ComandoAuxIgual() :
+Object ComandoAuxIgual(Token id) :
 {
     Exp exp = null;
 }
 {
     <LEITURA> <APAR> <FPAR> <PONTOVIRG>
-    { return new EChamadaFun("readInput", new ArrayList<Exp>()); }
-| exp = Exp() <PONTOVIRG>
+    { return new CReadInput(0, id.image); }
+    
+    | exp = Exp() <PONTOVIRG>
     { return exp; }
 }
 
@@ -249,12 +256,12 @@ void ListaExpAux(ArrayList<Exp> exps) :
 
 Fun Func() :
 {
-    Token retType;
-    Token funcName;
-    ArrayList<ParamFormalFun> params;
-    ArrayList<VarDecl> vars;
-    ArrayList<Comando> body;
-    Fun f;
+    Token retType = null;
+    Token funcName = null;
+    ArrayList<ParamFormalFun> params = new ArrayList<>();
+    ArrayList<VarDecl> vars = new ArrayList<>();
+    ArrayList<Comando> body = new ArrayList<>();
+    Fun f = null;
 }
 {
     <FUN> retType = Tipo() funcName = TokenId() <APAR> (params = ListaArg())? <FPAR> <ACHAVES>
