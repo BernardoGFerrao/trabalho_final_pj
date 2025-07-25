@@ -14,4 +14,12 @@ public class CIf extends Comando{
 	  this.bloco = bloco;
 	} 
 
+	@Override
+	public String toString() {
+		String commands = "";
+		for (Comando command : bloco) 
+			commands += "\t" + command.toString() + "\n";
+		
+		return "if (" + exp.toString() + ") {\n" + commands + "}; //linha " + linha + "\n";
+	}
 }

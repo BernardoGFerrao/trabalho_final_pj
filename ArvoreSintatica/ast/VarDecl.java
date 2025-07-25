@@ -8,4 +8,9 @@ public class VarDecl{
    	this.type = type;
    	this.var = var;
    }
+
+   @Override
+   public String toString() {
+      return type + " " + var + ";\n";
+   }
 }

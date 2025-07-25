@@ -1,7 +1,5 @@
 package ast;
 
-import java.util.ArrayList;
-
 public class CReturn extends Comando{
 	public int linha;
 	public Exp exp;
@@ -11,7 +9,11 @@ public class CReturn extends Comando{
 	{
 	  this.linha = linha;
 	  this.exp = exp;
-	  
 	} 
+
+	@Override
+	public String toString() {
+		return "return " + exp.toString() + "; //linha " + linha + "\n";
+	}
 
 }

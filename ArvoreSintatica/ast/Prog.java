@@ -10,5 +10,15 @@ public class Prog{
         this.main = main;
         this.fun = fun;
     }
+
+    @Override
+    public String toString(){
+        String mainBody = "public static void main(String args[]){\n" + main.toString() + "\n}\n";
+        String functions = "";
+        for (Fun f : fun) {
+            functions += f.toString() + "\n";
+        }
+        return mainBody + functions; 
+    }
 }
 

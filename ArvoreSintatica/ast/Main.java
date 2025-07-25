@@ -13,4 +13,18 @@ public class Main{
 		this.coms = coms;
 	}
 
+	@Override
+	public String toString(){
+		String varDeclarations = "";
+		String commands = "";
+
+		for (VarDecl var : vars) 
+			varDeclarations += "\t" + var.toString() + "\n";
+		
+		for (Comando command : coms) 
+			commands += "\t" + command.toString() + "\n";
+
+		return varDeclarations + commands;
+	}
+
 }

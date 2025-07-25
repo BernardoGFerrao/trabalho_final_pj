@@ -14,4 +14,15 @@ public class CChamadaFun extends Comando{
 	  this.args = args;
 	} 
 
+	@Override
+	public String toString() {
+		String arguments = "";
+		for (int i = 0; i < args.size(); i++)
+			if (i == args.size() - 1) {
+				arguments += args.get(i).toString();
+			} else {
+				arguments += args.get(i).toString() + ", ";
+			}
+		return fun + "(" + arguments + "); //linha " + linha + "\n";
+	}
 }
