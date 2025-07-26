@@ -37,6 +37,6 @@ public class Fun{
 		for (Comando command : body)
 			commands += "\t" + command.toString();
 
-		return "public " + retorno + " " + nome + "(" + parameters + ") {\n" + varDeclarations + commands + "}\n";
+		return "public static " + retorno + " " + nome + "(" + parameters + ") {\n" + varDeclarations + commands + "}\n";
 	}
 }
