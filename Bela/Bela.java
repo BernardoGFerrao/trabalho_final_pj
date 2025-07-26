@@ -449,7 +449,7 @@ exps.add(exp);
     Token id;
     type = Tipo();
     id = TokenId();
-params.add(new ParamFormalFun(id.image, type.image));
+params.add(new ParamFormalFun(type.image, id.image));
     ListaArgAux(params);
 {if ("" != null) return params;}
     throw new Error("Missing return statement in function");
@@ -462,7 +462,7 @@ params.add(new ParamFormalFun(id.image, type.image));
       jj_consume_token(VIRGULA);
       type = Tipo();
       id = TokenId();
-params.add(new ParamFormalFun(id.image, type.image));
+params.add(new ParamFormalFun(type.image, id.image));
       ListaArgAux(params);
       break;
       }

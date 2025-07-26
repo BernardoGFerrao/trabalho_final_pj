@@ -278,7 +278,7 @@ ArrayList<ParamFormalFun> ListaArg() :
     Token id;
 }
 {
-    type = Tipo() id = TokenId() { params.add(new ParamFormalFun(id.image, type.image)); }
+    type = Tipo() id = TokenId() { params.add(new ParamFormalFun(type.image, id.image)); }
     ListaArgAux(params)
     { return params; }
 }
@@ -289,7 +289,7 @@ void ListaArgAux(ArrayList<ParamFormalFun> params) :
     Token id;
 }
 {
-    ( <VIRGULA> type = Tipo() id = TokenId() { params.add(new ParamFormalFun(id.image, type.image)); } ListaArgAux(params) )?
+    ( <VIRGULA> type = Tipo() id = TokenId() { params.add(new ParamFormalFun(type.image, id.image)); } ListaArgAux(params) )?
 }
 
 Token TokenId() :
